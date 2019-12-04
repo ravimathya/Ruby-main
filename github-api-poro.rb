@@ -15,57 +15,69 @@ class Github
     end
 
     def first
-        start = User_Option.new.option(username)
+        start = UserOption.new.option(username)
     end
     
 
 end
 
-class User_Option
+class UserOption
     # include ask
     def option(username)
         print "press 1 to show github repository \npress 2 ro create github repository: "
         option = gets.chomp.to_i
         puts "\n"
         if option == 1
-            Read_repository.new.read_repos(username)
+            CreateAndReadRepository.new.read_repos(username)
         elsif option == 2
-            Create_Repository.new.create_repos(username)
+            CreateRepository.new.create_repos(username)
         else
             puts "Incorrect input"
         end
     end
 end
 
-class Create_Repository
+class CreateAndReadRepository
     def create_repos(username)
-        if File_Read.new.read(username) == nil
+        if FileReadWrite.new.read(username) == nil
             puts "enter your token:"
             access_token = gets.chomp
-            File_Write.write(username, access_token)
-            puts Create_Github_Repository.new.create(username, access_token)
+            FileReadWrite.write(username, access_token)
+            puts CreateGithubRepository.new.create(username, access_token)
         else
-            token = File_Read.new.read(username)
-            puts Create_Github_Repository.new.create(username, token)
+            token = FileReadWrite.new.read(username)
+            puts CreateGithubRepository.new.create(username, token)
         end
     end
-end
 
-class Read_repository
     def read_repos(username)
-        if File_Read.new.read(username) == nil
+        if FileReadWrite.new.read(username) == nil
             puts "enter your token:"
             access_token = gets.chomp
-            File_Write.write(username, access_token)
-            puts Show_Github_Repository.new.show(access_token)
+            FileReadWrite.write(username, access_token)
+            puts ShowGithubRepository.new.show(access_token)
         else
-            token = File_Read.new.read(username)
-            puts Show_Github_Repository.new.show(token)
+            token = FileReadWrite.new.read(username)
+            puts ShowGithubRepository.new.show(token)
         end
     end
 end
 
-class File_Read
+# class ReadRepository
+#     def read_repos(username)
+#         if FileReadWrite.new.read(username) == nil
+#             puts "enter your token:"
+#             access_token = gets.chomp
+#             FileReadWrite.write(username, access_token)
+#             puts ShowGithubRepository.new.show(access_token)
+#         else
+#             token = FileReadWrite.new.read(username)
+#             puts ShowGithubRepository.new.show(token)
+#         end
+#     end
+# end
+
+class FileReadWrite
     def read(username)
         file = File.open("code.txt", "r").each do |line|
             words = line.split
@@ -75,10 +87,8 @@ class File_Read
             end
         end
         file.close
-    end    
-end
+    end
 
-class File_Write
     def write(username, token)
         file = File.open("code.txt", "a")
         file.puts "#{username} #{token}"
@@ -86,12 +96,12 @@ class File_Write
     end
 end
 
-class Show_Github_Repository
+class ShowGithubRepository
     def show(token)
         uri = URI.parse("https://api.github.com/user/repos")
         header = {
             'Content-Type': 'text/json',
-            'Authorization': "Bearer 765c0e4348b2fa0cc71a72e2e7f96a86f8b6ee69" 
+            'Authorization': "Bearer 3cb3f9c35ead4dff030788195151863a3cb8aa6a" 
         }
     
         http = Net::HTTP.new(uri.host, uri.port)
@@ -105,7 +115,7 @@ class Show_Github_Repository
     end
 end
 
-class Create_Github_Repository
+class CreateGithubRepository
     def create(username, token)
         print "enter repository name: "
         repo_name = gets.chomp
