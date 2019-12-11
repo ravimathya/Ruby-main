@@ -3,6 +3,11 @@ require 'uri'
 require 'json'
 require 'net/http'
 
+# module ask
+#     print "enter username: "
+#     username = gets.chomp
+# end
+
 class Github
     attr_reader :username
     def initialize(username)
@@ -12,6 +17,8 @@ class Github
     def first
         start = UserOption.new.option(username)
     end
+    
+
 end
 
 class UserOption
@@ -36,10 +43,10 @@ class CreateAndReadRepository
             puts "enter your token:"
             access_token = gets.chomp
             FileReadWrite.write(username, access_token)
-            puts ShowAndCreateGithubRepository.new.create(username, access_token)
+            puts CreateGithubRepository.new.create(username, access_token)
         else
             token = FileReadWrite.new.read(username)
-            puts ShowAndCreateGithubRepository.new.create(username, token)
+            puts CreateGithubRepository.new.create(username, token)
         end
     end
 
@@ -48,10 +55,10 @@ class CreateAndReadRepository
             puts "enter your token:"
             access_token = gets.chomp
             FileReadWrite.write(username, access_token)
-            puts ShowAndCreateGithubRepository.new.show(access_token)
+            puts ShowGithubRepository.new.show(access_token)
         else
             token = FileReadWrite.new.read(username)
-            puts ShowAndCreateGithubRepository.new.show(token)
+            puts ShowGithubRepository.new.show(token)
         end
     end
 end
@@ -75,7 +82,7 @@ class FileReadWrite
     end
 end
 
-class ShowAndCreateGithubRepository
+class ShowGithubRepository
     def show(token)
         uri = URI.parse("https://api.github.com/user/repos")
         header = {
@@ -92,7 +99,9 @@ class ShowAndCreateGithubRepository
            puts repo['ssh_url']
         end;nil
     end
+end
 
+class CreateGithubRepository
     def create(username, token)
         print "enter repository name: "
         repo_name = gets.chomp
@@ -113,11 +122,14 @@ class ShowAndCreateGithubRepository
         response = http.request(request)
         result = JSON.parse(response.body)
 
+        puts response['ssh_url']
         puts "git init"
         puts "git add ."
         puts 'git commit -m "first commit"'
         puts "git remote add origin https://github.com/#{username}/#{repo_name}.git"
         puts "git push -u origin master"
+        # https://github.com/ravimathya/awesome.git
+        # puts "your url is #{username} and code is #{token}."
     end
 end
 
