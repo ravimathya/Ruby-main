@@ -35,7 +35,7 @@ class CreateAndReadRepository
         if FileReadWrite.new.read(username) == nil
             puts "enter your token:"
             access_token = gets.chomp
-            FileReadWrite.write(username, access_token)
+            FileReadWrite.new.write(username, access_token)
             puts ShowAndCreateGithubRepository.new.create(username, access_token)
         else
             token = FileReadWrite.new.read(username)
@@ -47,7 +47,7 @@ class CreateAndReadRepository
         if FileReadWrite.new.read(username) == nil
             puts "enter your token:"
             access_token = gets.chomp
-            FileReadWrite.write(username, access_token)
+            FileReadWrite.new.write(username, access_token)
             puts ShowAndCreateGithubRepository.new.show(access_token)
         else
             token = FileReadWrite.new.read(username)
